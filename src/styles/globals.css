@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Fonts loaded via next/font — vars injected on <html> ── */
+@layer base {
+  :root {
+    --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+    --font-inter: 'Inter', 'Helvetica Neue', sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-cream text-text-body font-body;
+  }
+
+  /* Focus visible — keyboard only */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-gold;
+  }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Typography utilities */
+  .heading-display-xl { @apply font-display text-display-xl font-light; }
+  .heading-display-lg { @apply font-display text-display-lg font-normal; }
+  .heading-h1         { @apply font-display text-h1 font-semibold; }
+  .heading-h2         { @apply font-display text-h2 font-semibold; }
+  .heading-h3         { @apply font-body text-h3 font-bold; }
+  .heading-h4         { @apply font-body text-h4 font-semibold; }
+
+  /* Text content max-width for readability */
+  .prose-width { @apply max-w-text mx-auto; }
+
+  /* Section padding */
+  .section-padding { @apply py-16 md:py-24 lg:py-32; }
+  .section-padding-sm { @apply py-10 md:py-16; }
+
+  /* Container */
+  .container-lp {
+    @apply max-w-content mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Label caps */
+  .label-caps {
+    @apply text-label font-semibold uppercase tracking-widest;
+  }
+}
