@@ -10,14 +10,14 @@ const config: Config = {
     extend: {
       colors: {
         // Brand palette — from Design System Brief
-        espresso:    '#2C2416',
-        taupe:       '#7C6A50',
-        gold:        '#B59A6A',
-        cream:       '#F5F0E8',
-        terracotta:  '#C47C50',
-        'text-body': '#3D3326',
-        'text-muted':'#8C7B69',
-        'border-soft':'#D6C8B4',
+        espresso:    '#1B2A4A',
+        taupe:       '#4B6B8A',
+        gold:        '#4BA3D3',
+        cream:       '#F4F8FB',
+        terracotta:  '#2563EB',
+        'text-body': '#1B2A4A',
+        'text-muted':'#6B8299',
+        'border-soft':'#D0DDE8',
       },
       fontFamily: {
         display: ['var(--font-cormorant)', 'Georgia', 'serif'],
@@ -45,9 +45,9 @@ const config: Config = {
         'text':    '760px',
       },
       boxShadow: {
-        'card':       '0 4px 24px rgba(44, 36, 22, 0.08)',
-        'card-hover': '0 12px 40px rgba(44, 36, 22, 0.14)',
-        'nav':        '0 2px 20px rgba(44, 36, 22, 0.12)',
+        'card':       '0 4px 24px rgba(27, 42, 74, 0.08)',
+        'card-hover': '0 12px 40px rgba(27, 42, 74, 0.14)',
+        'nav':        '0 2px 20px rgba(27, 42, 74, 0.12)',
       },
       borderRadius: {
         'card': '12px',

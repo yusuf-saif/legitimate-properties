@@ -29,6 +29,10 @@ export const metadata: Metadata = {
     locale: 'en_NG',
     siteName: 'Legitimate Properties',
   },
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
   robots: { index: true, follow: true },
 }
 

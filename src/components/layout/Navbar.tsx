@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
@@ -16,16 +17,33 @@ const NAV_LINKS = [
 export function Navbar() {
   const scrolled = useScrolled(80)
   const [open, setOpen] = useState(false)
+  const scrolledStyle = scrolled
+    ? {
+        background: 'rgba(27, 42, 74, 0.88)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+        borderBottom: '1px solid rgba(75, 163, 211, 0.12)',
+      }
+    : {}
 
   return (
-    <header className={cn(
-      'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-      scrolled ? 'bg-espresso shadow-nav' : 'bg-transparent'
-    )}>
+    <header
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      style={scrolledStyle}
+    >
       <nav className="container-lp h-20 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="font-display text-xl font-semibold text-cream tracking-wide">
-          Legitimate<span className="text-gold">.</span>
+        <Link href="/" aria-label="Legitimate Properties Limited home" className="flex items-center">
+          <div className="brightness-0 invert">
+            <Image
+              src="/logo.png"
+              width={200}
+              height={52}
+              alt="Legitimate Properties Limited"
+              className="object-contain object-left h-12 w-auto"
+              priority
+            />
+          </div>
         </Link>
 
         {/* Desktop links */}
@@ -56,8 +74,14 @@ export function Navbar() {
       {open && (
         <div className="fixed inset-0 bg-cream z-50 flex flex-col">
           <div className="container-lp h-20 flex items-center justify-between">
-            <Link href="/" className="font-display text-xl font-semibold text-espresso">
-              Legitimate<span className="text-gold">.</span>
+            <Link href="/" aria-label="Legitimate Properties Limited home">
+              <Image
+                src="/logo.png"
+                width={200}
+                height={52}
+                alt="Legitimate Properties Limited"
+                className="object-contain object-left h-12 w-auto"
+              />
             </Link>
             <button onClick={() => setOpen(false)} className="text-espresso p-2" aria-label="Close menu">
               <X size={24} />

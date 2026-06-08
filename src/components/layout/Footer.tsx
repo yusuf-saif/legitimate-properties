@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { Instagram, Linkedin, Facebook } from 'lucide-react'
 
@@ -7,9 +8,15 @@ export function Footer() {
       <div className="container-lp py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Brand */}
         <div className="lg:col-span-1">
-          <p className="font-display text-xl font-semibold mb-3">
-            Legitimate<span className="text-gold">.</span>
-          </p>
+          <Link href="/" aria-label="Legitimate Properties Limited home" className="inline-block mb-3">
+            <Image
+              src="/logo.png"
+              width={160}
+              height={42}
+              alt="Legitimate Properties Limited"
+              className="h-[42px] w-auto object-contain"
+            />
+          </Link>
           <p className="text-cream/60 text-body-sm leading-relaxed max-w-xs">
             Premium real estate across Nigeria. Where homes tell stories.
           </p>
@@ -20,7 +27,7 @@ export function Footer() {
               { icon: Facebook,  href: '#', label: 'Facebook' },
             ].map(({ icon: Icon, href, label }) => (
               <a key={label} href={href} aria-label={label}
-                className="w-9 h-9 rounded-full bg-cream/10 flex items-center justify-center text-cream/70 hover:bg-gold hover:text-espresso transition-all duration-200">
+                className="w-9 h-9 rounded-full bg-cream/10 flex items-center justify-center text-cream/70 hover:bg-gold hover:text-espresso transition-colors duration-200">
                 <Icon size={16} />
               </a>
             ))}

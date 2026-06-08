@@ -1,9 +1,32 @@
-const STATS = [
-  { value: '12+', label: 'Years in Real Estate' },
-  { value: '300+', label: 'Properties Delivered' },
-  { value: '6',   label: 'Cities Covered' },
-  { value: '98%', label: 'Client Satisfaction' },
-]
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useInView } from '@/lib/hooks/useInView'
+
+function CountUp({ target, suffix = '' }: { target: number, suffix: string }) {
+  const [count, setCount] = useState(0)
+  const { ref, inView } = useInView()
+
+  useEffect(() => {
+    if (!inView) return
+
+    let start = 0
+    const step = target / 40
+    const timer = setInterval(() => {
+      start += step
+      if (start >= target) {
+        setCount(target)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(start))
+      }
+    }, 25)
+
+    return () => clearInterval(timer)
+  }, [inView, target])
+
+  return <span ref={ref as any}>{count}{suffix}</span>
+}
 
 export function IntroStrip() {
   return (
@@ -19,12 +42,22 @@ export function IntroStrip() {
           </p>
         </div>
         <div className="grid grid-cols-2 gap-6">
-          {STATS.map(({ value, label }) => (
-            <div key={label} className="p-6 bg-cream rounded-card border border-border-soft">
-              <p className="font-display text-h1 font-semibold text-terracotta mb-1">{value}</p>
-              <p className="text-text-muted text-body-sm">{label}</p>
-            </div>
-          ))}
+          <div className="p-6 bg-cream rounded-card border border-border-soft">
+            <p className="font-display text-h1 font-semibold text-terracotta mb-1"><CountUp target={12} suffix="+" /></p>
+            <p className="text-text-muted text-body-sm">Years in Real Estate</p>
+          </div>
+          <div className="p-6 bg-cream rounded-card border border-border-soft">
+            <p className="font-display text-h1 font-semibold text-terracotta mb-1"><CountUp target={300} suffix="+" /></p>
+            <p className="text-text-muted text-body-sm">Properties Delivered</p>
+          </div>
+          <div className="p-6 bg-cream rounded-card border border-border-soft">
+            <p className="font-display text-h1 font-semibold text-terracotta mb-1"><CountUp target={6} suffix="" /></p>
+            <p className="text-text-muted text-body-sm">Cities Covered</p>
+          </div>
+          <div className="p-6 bg-cream rounded-card border border-border-soft">
+            <p className="font-display text-h1 font-semibold text-terracotta mb-1"><CountUp target={98} suffix="%" /></p>
+            <p className="text-text-muted text-body-sm">Client Satisfaction</p>
+          </div>
         </div>
       </div>
     </section>
