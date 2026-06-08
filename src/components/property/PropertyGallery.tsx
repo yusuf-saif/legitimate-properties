@@ -1,4 +1,3 @@
-'use client'
 import Image from 'next/image'
 import { urlFor } from '@/lib/sanity/image'
 import type { SanityImage } from '@/types'

@@ -17,10 +17,12 @@ export const metadata: Metadata = {
 export const revalidate = 3600 // ISR — revalidate every hour
 
 export default async function HomePage() {
-  const [featured, news] = await Promise.all([
-    sanityClient.fetch<Property[]>(FEATURED_PROPERTIES_QUERY),
-    sanityClient.fetch<NewsPost[]>(NEWS_QUERY + ' [0..2]'),
-  ])
+  const [featured, news] = sanityClient
+    ? await Promise.all([
+        sanityClient.fetch<Property[]>(FEATURED_PROPERTIES_QUERY),
+        sanityClient.fetch<NewsPost[]>(NEWS_QUERY + ' [0..2]'),
+      ])
+    : [[], []]
 
   return (
     <>

@@ -8,10 +8,14 @@ import { EnquiryForm }     from '@/components/forms/EnquiryForm'
 import { PropertyCard }    from '@/components/property/PropertyCard'
 import type { Property } from '@/types'
 
+export const revalidate = 3600
+
 interface Props { params: { slug: string } }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const property = await sanityClient.fetch<Property>(PROPERTY_BY_SLUG_QUERY, { slug: params.slug })
+  const property = sanityClient
+    ? await sanityClient.fetch<Property>(PROPERTY_BY_SLUG_QUERY, { slug: params.slug })
+    : null
   if (!property) return { title: 'Property Not Found' }
   return {
     title: property.title,
@@ -20,12 +24,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PropertyDetailPage({ params }: Props) {
-  const property = await sanityClient.fetch<Property>(PROPERTY_BY_SLUG_QUERY, { slug: params.slug })
+  const property = sanityClient
+    ? await sanityClient.fetch<Property>(PROPERTY_BY_SLUG_QUERY, { slug: params.slug })
+    : null
   if (!property) notFound()
 
-  const related = await sanityClient.fetch<Property[]>(RELATED_PROPERTIES_QUERY, {
-    slug: params.slug, type: property.type, city: property.location.city,
-  })
+  const related = sanityClient
+    ? await sanityClient.fetch<Property[]>(RELATED_PROPERTIES_QUERY, {
+        slug: params.slug, type: property.type, city: property.location.city,
+      })
+    : []
 
   return (
     <div className="pt-24">

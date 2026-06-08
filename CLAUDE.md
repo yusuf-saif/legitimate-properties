@@ -1,88 +1,114 @@
-# Legitimate Properties — Website Project
+# Legitimate Properties — Website
+> Claude Code reads this automatically every session.
+
+## Quick Context
+Premium real estate website for Legitimate Properties (Nigeria). Next.js 14 + Sanity + Tailwind. Warm, earthy, editorial aesthetic. See `docs/` for full specs.
+
+## Status
+All planned code work is complete. CSS/Tailwind is confirmed working; the prior unstyled render was caused by a stale dev process, not a source-code issue.
+
+## Launch Checklist
+- Set `NEXT_PUBLIC_SANITY_PROJECT_ID` in `.env.local` and in Vercel env vars
+- Set `SANITY_API_TOKEN` in Vercel env vars (server-only)
+- Set `RESEND_API_KEY` and `CONTACT_EMAIL` in Vercel env vars
+- Set `NEXT_PUBLIC_WA_NUMBER` to the real WhatsApp Business number
+- Run `npm run sanity` to open Sanity Studio, then add initial content: minimum 6 properties, 3 news posts, and team members
+- Deploy to Vercel with `vercel --prod` or push to `main` if the repo is connected
+- Verify all Core Web Vitals are green after deploy
+- Submit the sitemap to Google Search Console
+
+---
 
 ## Stack
-- **Framework**: Next.js 14 (App Router, TypeScript)
-- **Styling**: Tailwind CSS with custom design tokens
-- **CMS**: Sanity.io (headless)
-- **Fonts**: Cormorant Garamond (display) + Inter (body) via next/font
-- **Animation**: Framer Motion (use `motion/react` import)
-- **Forms**: React Hook Form + Zod validation
-- **Image optimisation**: Next.js Image + Sanity image-url builder
-- **Deployment**: Vercel
+- Next.js 14 (App Router, TypeScript strict)
+- Tailwind CSS with custom tokens (see `docs/DESIGN_SYSTEM.md`)
+- Sanity.io — headless CMS
+- Framer Motion — animations
+- React Hook Form + Zod — forms
+- Lucide Icons
+- Vercel — hosting
 
-## Design System (always follow these)
-### Colours (Tailwind tokens)
-- `espresso`   = #2C2416 — dark backgrounds, headings
-- `taupe`      = #7C6A50 — secondary text, icons  
-- `gold`       = #B59A6A — accents, highlights (use sparingly)
-- `cream`      = #F5F0E8 — page background, sections
-- `terracotta` = #C47C50 — primary CTAs, badges, hover states
-- `text-body`  = #3D3326 — body copy
-- `text-muted` = #8C7B69 — captions, metadata
-- `border-soft`= #D6C8B4 — dividers, input borders
+## Code Rules (non-negotiable)
+1. All pages are **server components** by default — `async`, fetch from Sanity
+2. `'use client'` only when using hooks, events, or browser APIs
+3. `export const revalidate = 3600` on all pages (ISR, 1-hour)
+4. No hardcoded hex colours — use Tailwind design tokens only
+5. No `transition: all` — specify exact properties (Emil principle)
+6. Never `any` type — define in `src/types/index.ts`
+7. Images always have meaningful `alt` text
+8. Forms: client-side Zod validation + server API route + success state
 
-### Typography
-- Display/headings → `font-display` (Cormorant Garamond)
-- Body/UI → `font-body` (Inter)
-- Use `heading-display-xl`, `heading-h1`, `heading-h2`, `heading-h3`, `heading-h4` classes
-- Use `label-caps` class for uppercase label text
+## Design System (always follow — full ref in `docs/DESIGN_SYSTEM.md`)
 
-### Layout
-- Container: `container-lp` class (max-width 1280px, auto margins, responsive padding)
-- Section spacing: `section-padding` (py-16 md:py-24 lg:py-32) or `section-padding-sm`
-- Text prose width: `max-w-text` (760px max)
-- 8px base grid — all spacing in multiples of 8
+### Colours
+`espresso` `taupe` `gold` `cream` `terracotta` `text-body` `text-muted` `border-soft`
 
-### Components
-- **Button**: `<Button variant="primary|secondary|ghost" size="sm|md|lg">` → src/components/ui/Button.tsx
-- **PropertyCard**: `<PropertyCard property={p} />` → src/components/property/PropertyCard.tsx
-- **EnquiryForm**: `<EnquiryForm propertySlug="" propertyTitle="" />` → src/components/forms/EnquiryForm.tsx
-- **Navbar / Footer / WhatsAppButton**: → src/components/layout/
+### Typography Classes
+`heading-display-xl` `heading-display-lg` `heading-h1` `heading-h2` `heading-h3` `heading-h4` `label-caps`
 
-### Key Hooks
-- `useScrolled(threshold)` — returns boolean, navbar bg toggle
-- `useInView(options)` — returns { ref, inView } for scroll animations
+### Layout Classes
+`container-lp` `section-padding` `section-padding-sm` `max-w-text`
 
-### Utilities
-- `cn(...classes)` — clsx + tailwind-merge
-- `formatPrice(amount, compact?)` — formats NGN prices
-- `formatDate(dateString)` — human-readable date
-- `urlFor(sanityImage)` — Sanity image URL builder
+### Section Pattern
+```tsx
+<section className="section-padding bg-[cream|white|espresso]">
+  <div className="container-lp">
+    <p className="label-caps text-terracotta mb-3">Category</p>
+    <h2 className="heading-h2 text-espresso mb-8">Heading</h2>
+  </div>
+</section>
+```
 
-## Data & Queries
-- Sanity client → `src/lib/sanity/client.ts`
-- GROQ queries → `src/lib/sanity/queries.ts`
-- Types → `src/types/index.ts`
+### Page Hero Pattern (all interior pages)
+```tsx
+<section className="pt-24 section-padding-sm bg-espresso text-cream">
+  <div className="container-lp">
+    <p className="label-caps text-gold mb-4">Category</p>
+    <h1 className="heading-h1 max-w-2xl">Page Title</h1>
+  </div>
+</section>
+```
 
-## Pages to Build (status)
-- [x] Home `/` — all sections wired
-- [x] Properties listing `/properties`
-- [x] Property detail `/properties/[slug]`
-- [ ] About `/about`
-- [ ] Services `/services`
-- [ ] Investors `/investors`
-- [ ] News listing `/news`
-- [ ] News detail `/news/[slug]`
-- [ ] Contact `/contact`
-- [ ] 404 page
+## Component Map
+| Component | Path | Notes |
+|-----------|------|-------|
+| `Button` | `@/components/ui/Button` | variant: primary\|secondary\|ghost |
+| `PropertyCard` | `@/components/property/PropertyCard` | needs `property: Property` |
+| `PropertyGrid` | `@/components/property/PropertyGrid` | needs `properties: Property[]` |
+| `EnquiryForm` | `@/components/forms/EnquiryForm` | propertySlug + propertyTitle props |
+| `Navbar` | `@/components/layout/Navbar` | auto-included in (marketing)/layout |
+| `Footer` | `@/components/layout/Footer` | auto-included in (marketing)/layout |
+| `WhatsAppButton` | `@/components/ui/WhatsAppButton` | auto-included in (marketing)/layout |
+
+## Key Lib
+| Util | Import | Use |
+|------|--------|-----|
+| `cn` | `@/lib/utils/cn` | merge Tailwind classes |
+| `formatPrice` | `@/lib/utils/format` | NGN prices |
+| `formatDate` | `@/lib/utils/format` | human dates |
+| `urlFor` | `@/lib/sanity/image` | Sanity image URLs |
+| `sanityClient` | `@/lib/sanity/client` | data fetching |
+| queries | `@/lib/sanity/queries` | GROQ strings |
+| `useScrolled` | `@/lib/hooks/useScrolled` | navbar bg toggle |
+| `useInView` | `@/lib/hooks/useInView` | scroll animations |
+
+## Skills Loaded
+- **`emil-design-eng`** (`.claude/skills/emil-design-eng/SKILL.md`) — animation decisions, interaction polish, review checklist. Reference before writing any motion code.
+- **`frontend-design`** — available in global skills. Invoke when building new UI.
 
 ## Environment Variables
-See `.env.example`. Copy to `.env.local` and fill in values before `npm run dev`.
+Fill `.env.local` (copy from `.env.example`):
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID=
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_TOKEN=
+NEXT_PUBLIC_APP_URL=
+NEXT_PUBLIC_WA_NUMBER=
+```
 
-## Code Conventions
-- All pages are **server components** by default (async, fetch from Sanity)
-- Mark `'use client'` only when using hooks, events, or browser APIs
-- `export const revalidate = 3600` on all pages (ISR, 1hr)
-- No inline styles — use Tailwind classes only
-- Images must always have meaningful `alt` text
-- Forms must have proper error states and WCAG accessible labels
-- Never use `any` type — define all types in `src/types/index.ts`
-
-## Remaining Work
-1. Wire `PropertyFilters` to URL search params (useSearchParams + router.push)
-2. Complete remaining pages (About, Services, Investors, News, Contact)
-3. Build `/api/contact` route (mirror of /api/enquiry)
-4. Add Sanity `teamMember` schema and About page
-5. Email sending in API routes (recommend Resend)
-6. Add `PropertyGallery` lightbox (use embla-carousel-react)
-7. Deploy to Vercel, connect Sanity project, set env vars
+## Docs Reference
+- `docs/PRD.md` — goals, pages, audiences, metrics
+- `docs/TRD.md` — full stack spec, architecture, security
+- `docs/DESIGN_SYSTEM.md` — full token reference, component patterns
+- `docs/DESIGN_GUIDE.md` — when to animate, typography tips, premium code checklist
+- `docs/BUILD_PHASES.md` — what's built, what's next, launch checklist

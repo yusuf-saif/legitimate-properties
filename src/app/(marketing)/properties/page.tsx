@@ -12,8 +12,53 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600
 
-export default async function PropertiesPage() {
-  const properties = await sanityClient.fetch<Property[]>(PROPERTIES_QUERY)
+interface Props {
+  searchParams?: {
+    type?: string
+    location?: string
+    priceRange?: string
+  }
+}
+
+function matchesPriceRange(property: Property, priceRange?: string) {
+  if (!priceRange) return true
+  if (property.priceOnRequest) return true
+  if (typeof property.price !== 'number') return false
+
+  if (priceRange === '0-50m') {
+    return property.price < 50_000_000
+  }
+
+  if (priceRange === '50m-200m') {
+    return property.price >= 50_000_000 && property.price <= 200_000_000
+  }
+
+  if (priceRange === '200m+') {
+    return property.price > 200_000_000
+  }
+
+  return true
+}
+
+export default async function PropertiesPage({ searchParams }: Props) {
+  const allProperties = sanityClient
+    ? await sanityClient.fetch<Property[]>(PROPERTIES_QUERY)
+    : []
+  const type = searchParams?.type?.toLowerCase()
+  const location = searchParams?.location?.toLowerCase()
+  const priceRange = searchParams?.priceRange
+
+  const properties = allProperties.filter(property => {
+    if (type && property.type !== type) {
+      return false
+    }
+
+    if (location && !property.location.city.toLowerCase().includes(location)) {
+      return false
+    }
+
+    return matchesPriceRange(property, priceRange)
+  })
 
   return (
     <div className="pt-24">

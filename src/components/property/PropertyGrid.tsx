@@ -1,4 +1,3 @@
-'use client'
 import { PropertyCard } from './PropertyCard'
 import type { Property } from '@/types'
 
