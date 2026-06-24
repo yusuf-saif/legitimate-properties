@@ -1,0 +1,22 @@
+databases:
+  - name: legitimate-properties-db
+    databaseName: legitimate_properties
+    plan: free
+
+services:
+  - type: web
+    name: legitimate-properties
+    env: node
+    plan: free
+    buildCommand: prisma generate && prisma db push && next build
+    startCommand: npx next start -p $PORT
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: legitimate-properties-db
+          property: connectionString
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://legitimate-properties.onrender.com
+      - key: NEXT_PUBLIC_WA_NUMBER
+        sync: false
