@@ -6,12 +6,15 @@
     "seed": "tsx prisma/seed.ts"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "prisma generate && next dev",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "seed": "prisma db seed",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "db:push": "prisma db push",
+    "db:setup": "prisma db push && prisma db seed",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.4.0",
