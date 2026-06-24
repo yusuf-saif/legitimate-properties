@@ -1,7 +1,7 @@
 'use client'
 import { MessageCircle } from 'lucide-react'
 
-const WA_NUMBER = '2348000000000'
+const WA_NUMBER = process.env.NEXT_PUBLIC_WA_NUMBER || '2348000000000'
 const WA_MESSAGE = 'Hello, I would like to enquire about a property.'
 
 export function WhatsAppButton() {

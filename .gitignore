@@ -6,3 +6,5 @@ out/
 dist/
 build/
 .DS_Store
+playwright-report/
+test-results/

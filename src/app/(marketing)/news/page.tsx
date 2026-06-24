@@ -1,12 +1,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { sanityClient } from '@/lib/sanity/client'
-import { urlFor } from '@/lib/sanity/image'
-import { NEWS_QUERY } from '@/lib/sanity/queries'
+import { prisma } from '@/lib/prisma'
+import { mapNewsPost } from '@/lib/mappers'
+import { PageTransition } from '@/components/ui/PageTransition'
 import { formatDate } from '@/lib/utils/format'
 import type { NewsPost } from '@/types'
-
-export const revalidate = 3600
 
 function NewsCard({ post }: { post: NewsPost }) {
   return (
@@ -17,7 +15,7 @@ function NewsCard({ post }: { post: NewsPost }) {
       <div className="relative aspect-[3/2] overflow-hidden bg-cream">
         {post.featuredImage ? (
           <Image
-            src={urlFor(post.featuredImage).width(600).height(400).url()}
+            src={post.featuredImage.url}
             alt={post.featuredImage.alt ?? post.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -43,30 +41,33 @@ function NewsCard({ post }: { post: NewsPost }) {
 }
 
 export default async function NewsPage() {
-  const posts = sanityClient
-    ? await sanityClient.fetch<NewsPost[]>(NEWS_QUERY)
-    : []
+  const raw = await prisma.newsPost.findMany({
+    orderBy: { publishedAt: 'desc' },
+  })
+  const posts = raw.map(mapNewsPost)
 
   return (
-    <div className="pt-24">
-      <section className="section-padding-sm bg-espresso text-cream">
-        <div className="container-lp">
-          <p className="label-caps text-gold mb-4">News & Insights</p>
-          <h1 className="heading-h1 max-w-2xl">From Our Desk</h1>
-        </div>
-      </section>
+    <PageTransition>
+      <div className="pt-24">
+        <section className="section-padding-sm bg-espresso text-cream">
+          <div className="container-lp">
+            <p className="label-caps text-gold mb-4">News & Insights</p>
+            <h1 className="heading-h1 max-w-2xl">From Our Desk</h1>
+          </div>
+        </section>
 
-      <section className="section-padding bg-cream">
-        <div className="container-lp">
-          {posts.length === 0 ? (
-            <p className="py-16 text-center text-body-md text-text-muted">No articles yet.</p>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {posts.map(post => <NewsCard key={post._id} post={post} />)}
-            </div>
-          )}
-        </div>
-      </section>
-    </div>
+        <section className="section-padding bg-cream">
+          <div className="container-lp">
+            {posts.length === 0 ? (
+              <p className="py-16 text-center text-body-md text-text-muted">No articles yet.</p>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {posts.map(post => <NewsCard key={post.id} post={post} />)}
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+    </PageTransition>
   )
 }

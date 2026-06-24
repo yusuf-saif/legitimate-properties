@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Brand palette — from Design System Brief
+        // Brand palette — blue corporate
         espresso:    '#1B2A4A',
         taupe:       '#4B6B8A',
         gold:        '#4BA3D3',

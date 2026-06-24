@@ -1,8 +1,9 @@
 import { FileText } from 'lucide-react'
 import { EnquiryForm } from '@/components/forms/EnquiryForm'
 import { Button } from '@/components/ui/Button'
-
-export const revalidate = 3600
+import { Reveal } from '@/components/ui/Reveal'
+import { StaggerGrid, StaggerItem } from '@/components/ui/StaggerGrid'
+import { PageTransition } from '@/components/ui/PageTransition'
 
 const METRICS = [
   { value: '₦12B+', label: 'Portfolio Value' },
@@ -30,7 +31,7 @@ const DOCUMENTS = [
 
 export default async function InvestorsPage() {
   return (
-    <div className="pt-24">
+    <PageTransition><div className="pt-24">
       <section className="section-padding-sm bg-espresso text-cream">
         <div className="container-lp">
           <p className="label-caps text-gold mb-4">Investor Relations</p>
@@ -41,18 +42,20 @@ export default async function InvestorsPage() {
         </div>
       </section>
 
-      <section className="section-padding-sm bg-white border-y border-border-soft">
-        <div className="container-lp grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <Reveal as="section" className="section-padding-sm bg-white border-y border-border-soft">
+        <StaggerGrid className="container-lp grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {METRICS.map(metric => (
-            <div key={metric.label} className="rounded-card border border-border-soft bg-cream p-6">
-              <p className="font-display text-h1 font-semibold text-terracotta mb-1">{metric.value}</p>
-              <p className="text-body-sm text-text-muted">{metric.label}</p>
-            </div>
+            <StaggerItem key={metric.label}>
+              <div className="rounded-card border border-border-soft bg-cream p-6">
+                <p className="font-display text-h1 font-semibold text-terracotta mb-1">{metric.value}</p>
+                <p className="text-body-sm text-text-muted">{metric.label}</p>
+              </div>
+            </StaggerItem>
           ))}
-        </div>
-      </section>
+        </StaggerGrid>
+      </Reveal>
 
-      <section className="section-padding bg-cream">
+      <Reveal as="section" className="section-padding bg-cream">
         <div className="container-lp grid gap-10 lg:grid-cols-2 lg:gap-16 lg:items-start">
           <div>
             <p className="label-caps text-terracotta mb-3">Investment Case</p>
@@ -77,9 +80,9 @@ export default async function InvestorsPage() {
             </ul>
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="section-padding-sm bg-white">
+      <Reveal as="section" className="section-padding-sm bg-white">
         <div className="container-lp">
           <div className="mb-10 text-center">
             <p className="label-caps text-terracotta mb-3">Documents</p>
@@ -101,9 +104,9 @@ export default async function InvestorsPage() {
             ))}
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="section-padding bg-espresso">
+      <Reveal as="section" className="section-padding bg-espresso">
         <div className="container-lp text-center">
           <p className="label-caps text-gold mb-3">Request Information</p>
           <h2 className="heading-h2 text-cream mb-4">Request an Investor Pack</h2>
@@ -114,7 +117,7 @@ export default async function InvestorsPage() {
             <EnquiryForm propertyTitle="Investor Pack Request" />
           </div>
         </div>
-      </section>
-    </div>
+      </Reveal>
+    </div></PageTransition>
   )
 }

@@ -29,7 +29,7 @@ const sizes: Record<Size, string> = {
 export function Button({ variant = 'primary', size = 'md', fullWidth, className, children, ...props }: ButtonProps) {
   const classes = cn(
     'inline-flex items-center justify-center gap-2 rounded-lg font-semibold',
-    'transition-all duration-200 focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none',
+    'transition-[background,color,border-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none',
     'disabled:opacity-50 disabled:cursor-not-allowed',
     variants[variant], sizes[size],
     fullWidth && 'w-full',

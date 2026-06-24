@@ -1,18 +1,83 @@
-import Image from 'next/image'
-import { urlFor } from '@/lib/sanity/image'
-import type { SanityImage } from '@/types'
+'use client'
 
-export function PropertyGallery({ images, title }: { images: SanityImage[]; title: string }) {
+import Image from 'next/image'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+import type { ImageField } from '@/types'
+
+export function PropertyGallery({ images, title }: { images: ImageField[]; title: string }) {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+
   if (!images?.length) return null
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[70vh] overflow-hidden">
-      {images.slice(0, 5).map((img, i) => (
-        <div key={i} className={`relative overflow-hidden ${i === 0 ? 'md:row-span-2' : ''}`} style={{ aspectRatio: i === 0 ? '4/3' : '16/9' }}>
-          <Image src={urlFor(img).width(1200).auto('format').url()} alt={img.alt ?? `${title} image ${i + 1}`}
-            fill className="object-cover hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 768px) 100vw, 50vw" priority={i === 0} />
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[70vh] overflow-hidden">
+        {images.slice(0, 5).map((img, i) => (
+          <motion.button
+            key={i}
+            onClick={() => setLightboxIndex(i)}
+            className={`relative overflow-hidden cursor-pointer ${i === 0 ? 'md:row-span-2' : ''}`}
+            style={{ aspectRatio: i === 0 ? '4/3' : '16/9' }}
+            initial={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
+            whileInView={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: i * 0.1 }}
+            whileHover={{ scale: 1.03 }}
+          >
+            <Image src={img.url} alt={img.alt ?? `${title} image ${i + 1}`}
+              fill className="object-cover transition-transform duration-500"
+              sizes="(max-width: 768px) 100vw, 50vw" priority={i === 0} />
+          </motion.button>
+        ))}
+      </div>
+
+      <AnimatePresence>
+        {lightboxIndex !== null && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-espresso/95 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightboxIndex(null)}
+          >
+            <button onClick={() => setLightboxIndex(null)} className="absolute top-6 right-6 text-cream hover:text-gold transition-colors z-10">
+              <X size={28} />
+            </button>
+
+            {lightboxIndex > 0 && (
+              <button onClick={e => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1) }}
+                className="absolute left-6 text-cream hover:text-gold transition-colors z-10">
+                <ChevronLeft size={36} />
+              </button>
+            )}
+            {lightboxIndex < images.length - 1 && (
+              <button onClick={e => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1) }}
+                className="absolute right-6 text-cream hover:text-gold transition-colors z-10">
+                <ChevronRight size={36} />
+              </button>
+            )}
+
+            <motion.div
+              key={lightboxIndex}
+              className="relative w-full max-w-5xl aspect-video mx-6"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <Image
+                src={images[lightboxIndex].url}
+                alt={images[lightboxIndex].alt ?? `${title} image ${lightboxIndex + 1}`}
+                fill className="object-contain"
+                sizes="100vw"
+                priority
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

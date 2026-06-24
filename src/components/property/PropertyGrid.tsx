@@ -1,4 +1,8 @@
+'use client'
+
+import { motion } from 'framer-motion'
 import { PropertyCard } from './PropertyCard'
+import { staggerContainer, fadeUp } from '@/lib/animations/variants'
 import type { Property } from '@/types'
 
 export function PropertyGrid({ properties }: { properties: Property[] }) {
@@ -12,14 +16,18 @@ export function PropertyGrid({ properties }: { properties: Property[] }) {
   }
 
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-      {properties.map((p, i) => (
-        <div key={p._id}
-          className="opacity-0 animate-fade-up"
-          style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'forwards' }}>
+    <motion.div
+      className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8"
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: '-50px' }}
+    >
+      {properties.map(p => (
+        <motion.div key={p.id} variants={fadeUp}>
           <PropertyCard property={p} />
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   )
 }

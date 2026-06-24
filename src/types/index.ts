@@ -9,8 +9,14 @@ export interface PropertySpec {
   parking?: number
 }
 
+export interface ImageField {
+  url: string
+  alt?: string
+  caption?: string
+}
+
 export interface Property {
-  _id: string
+  id: string
   slug: string
   title: string
   type: PropertyType
@@ -23,20 +29,20 @@ export interface Property {
   price?: number
   priceOnRequest: boolean
   specs: PropertySpec
-  description: string  // portable text
+  description: string
   highlights: string[]
-  gallery: SanityImage[]
+  gallery: ImageField[]
   featured: boolean
   createdAt: string
 }
 
 // ── Team Member ───────────────────────────────────────────────────────────────
 export interface TeamMember {
-  _id: string
+  id: string
   name: string
   title: string
-  bio: string
-  photo: SanityImage
+  bio?: string
+  photo?: ImageField | null
   order: number
 }
 
@@ -44,25 +50,15 @@ export interface TeamMember {
 export type NewsCategory = 'market-insight' | 'company-news' | 'development-update' | 'investment'
 
 export interface NewsPost {
-  _id: string
+  id: string
   slug: string
   title: string
   excerpt: string
   category: NewsCategory
-  featuredImage: SanityImage
+  featuredImage?: ImageField | null
   author: string
   publishedAt: string
-  body: unknown  // Sanity portable text
-}
-
-// ── Sanity ────────────────────────────────────────────────────────────────────
-export interface SanityImage {
-  _type: 'image'
-  asset: { _ref: string; _type: 'reference' }
-  alt?: string
-  caption?: string
-  hotspot?: { x: number; y: number }
-  crop?: { top: number; bottom: number; left: number; right: number }
+  body: string
 }
 
 // ── Forms ─────────────────────────────────────────────────────────────────────

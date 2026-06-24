@@ -12,6 +12,6 @@ export function useInView(options?: IntersectionObserverInit) {
     )
     observer.observe(ref.current)
     return () => observer.disconnect()
-  }, [])
+  }, [options])
   return { ref, inView }
 }

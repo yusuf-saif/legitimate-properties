@@ -2,35 +2,26 @@
 > OpenCode reads this automatically every session.
 
 ## Quick Context
-Premium real estate website for Legitimate Properties (Nigeria). Next.js 14 + Sanity + Tailwind. Warm, earthy, editorial aesthetic. See `docs/` for full specs.
-
-## Active Work
-Check `docs/BUILD_PHASES.md` for current status. Phase 1 complete. Phase 2 (remaining pages) is next.
-
-**Pages remaining:** `/about`, `/contact`, `/investors`, `/news`, `/news/[slug]`, `/services`, `/404`
-
-Use `/new-page [name]` to build any remaining page.
-
----
+Premium real estate website for Legitimate Properties (Nigeria). Next.js 14 + Prisma/SQLite + Tailwind. Warm, earthy, editorial aesthetic. See `docs/` for full specs.
 
 ## Stack
 - Next.js 14 (App Router, TypeScript strict)
 - Tailwind CSS with custom tokens (see `docs/DESIGN_SYSTEM.md`)
-- Sanity.io — headless CMS
+- Prisma + SQLite — local database
 - Framer Motion — animations
 - React Hook Form + Zod — forms
+- TipTap — rich text editor (admin)
 - Lucide Icons
 - Vercel — hosting
 
 ## Code Rules (non-negotiable)
-1. All pages are **server components** by default — `async`, fetch from Sanity
+1. Pages are **server components** by default — `async`, fetch from Prisma
 2. `'use client'` only when using hooks, events, or browser APIs
-3. `export const revalidate = 3600` on all pages (ISR, 1-hour)
-4. No hardcoded hex colours — use Tailwind design tokens only
-5. No `transition: all` — specify exact properties (Emil principle)
-6. Never `any` type — define in `src/types/index.ts`
-7. Images always have meaningful `alt` text
-8. Forms: client-side Zod validation + server API route + success state
+3. No hardcoded hex colours — use Tailwind design tokens only
+4. No `transition: all` — specify exact properties (Emil principle)
+5. Never `any` type — define in `src/types/index.ts`
+6. Images always have meaningful `alt` text
+7. Forms: client-side Zod validation + server API route + success state
 
 ## Design System (always follow — full ref in `docs/DESIGN_SYSTEM.md`)
 
@@ -42,16 +33,6 @@ Use `/new-page [name]` to build any remaining page.
 
 ### Layout Classes
 `container-lp` `section-padding` `section-padding-sm` `max-w-text`
-
-### Section Pattern
-```tsx
-<section className="section-padding bg-[cream|white|espresso]">
-  <div className="container-lp">
-    <p className="label-caps text-terracotta mb-3">Category</p>
-    <h2 className="heading-h2 text-espresso mb-8">Heading</h2>
-  </div>
-</section>
-```
 
 ### Page Hero Pattern (all interior pages)
 ```tsx
@@ -73,6 +54,8 @@ Use `/new-page [name]` to build any remaining page.
 | `Navbar` | `@/components/layout/Navbar` | auto-included in (marketing)/layout |
 | `Footer` | `@/components/layout/Footer` | auto-included in (marketing)/layout |
 | `WhatsAppButton` | `@/components/ui/WhatsAppButton` | auto-included in (marketing)/layout |
+| `Reveal` | `@/components/ui/Reveal` | scroll-triggered fade-up wrapper |
+| `StaggerGrid` | `@/components/ui/StaggerGrid` | staggered grid animation |
 
 ## Key Lib
 | Util | Import | Use |
@@ -80,23 +63,26 @@ Use `/new-page [name]` to build any remaining page.
 | `cn` | `@/lib/utils/cn` | merge Tailwind classes |
 | `formatPrice` | `@/lib/utils/format` | NGN prices |
 | `formatDate` | `@/lib/utils/format` | human dates |
-| `urlFor` | `@/lib/sanity/image` | Sanity image URLs |
-| `sanityClient` | `@/lib/sanity/client` | data fetching |
-| queries | `@/lib/sanity/queries` | GROQ strings |
+| `prisma` | `@/lib/prisma` | database client |
+| `mapProperty` | `@/lib/mappers` | Prisma → app type |
 | `useScrolled` | `@/lib/hooks/useScrolled` | navbar bg toggle |
 | `useInView` | `@/lib/hooks/useInView` | scroll animations |
 
-## Skills Loaded
-- **`emil-design-eng`** (`.claude/skills/emil-design-eng/SKILL.md`) — animation decisions, interaction polish, review checklist. Reference before writing any motion code.
-- **`frontend-design`** — available in global skills. Invoke when building new UI.
+## Admin
+| Route | Purpose |
+|-------|---------|
+| `/admin` | Dashboard |
+| `/admin/properties` | Manage properties |
+| `/admin/news` | Manage news articles |
+| `/admin/team` | Manage team members |
+
+Image uploads go to `public/uploads/` via `/api/upload`.
 
 ## Environment Variables
 Fill `.env.local` (copy from `.env.example`):
 ```
-NEXT_PUBLIC_SANITY_PROJECT_ID=
-NEXT_PUBLIC_SANITY_DATASET=production
-SANITY_API_TOKEN=
-NEXT_PUBLIC_APP_URL=
+DATABASE_URL="file:./dev.db"
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_WA_NUMBER=
 ```
 

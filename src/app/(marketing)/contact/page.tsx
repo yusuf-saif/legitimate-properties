@@ -1,12 +1,12 @@
 import { ContactForm } from '@/components/forms/ContactForm'
-
-export const revalidate = 3600
+import { Reveal } from '@/components/ui/Reveal'
+import { PageTransition } from '@/components/ui/PageTransition'
 
 export default async function ContactPage() {
   const whatsappHref = `https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? ''}`
 
   return (
-    <div className="pt-24">
+    <PageTransition><div className="pt-24">
       <section className="section-padding-sm bg-espresso text-cream">
         <div className="container-lp">
           <p className="label-caps text-gold mb-4">Contact</p>
@@ -14,7 +14,7 @@ export default async function ContactPage() {
         </div>
       </section>
 
-      <section className="section-padding bg-cream">
+      <Reveal as="section" className="section-padding bg-cream">
         <div className="container-lp grid gap-10 lg:grid-cols-3 lg:items-start">
           <div className="lg:col-span-2">
             <ContactForm />
@@ -65,7 +65,7 @@ export default async function ContactPage() {
             </div>
           </aside>
         </div>
-      </section>
-    </div>
+      </Reveal>
+    </div></PageTransition>
   )
 }

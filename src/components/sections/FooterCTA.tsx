@@ -1,8 +1,11 @@
+'use client'
+
 import Link from 'next/link'
+import { Reveal } from '@/components/ui/Reveal'
 
 export function FooterCTA() {
   return (
-    <section className="section-padding bg-terracotta">
+    <Reveal as="section" className="section-padding bg-terracotta">
       <div className="container-lp text-center">
         <h2 className="heading-display-lg text-white mb-4">
           Ready to Find Your Property?
@@ -21,6 +24,6 @@ export function FooterCTA() {
           </Link>
         </div>
       </div>
-    </section>
+    </Reveal>
   )
 }

@@ -19,17 +19,24 @@ interface Props { propertySlug?: string; propertyTitle?: string }
 
 export function EnquiryForm({ propertySlug, propertyTitle }: Props) {
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
   })
 
   const onSubmit = async (data: FormData) => {
-    await fetch('/api/enquiry', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...data, propertySlug, propertyTitle }),
-    })
-    setSubmitted(true)
+    try {
+      setError('')
+      const res = await fetch('/api/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, propertySlug, propertyTitle }),
+      })
+      if (!res.ok) throw new Error('Failed to send enquiry')
+      setSubmitted(true)
+    } catch {
+      setError('Something went wrong. Please try again or contact us directly.')
+    }
   }
 
   if (submitted) {
@@ -85,6 +92,8 @@ export function EnquiryForm({ propertySlug, propertyTitle }: Props) {
           />
           {errors.message && <p className="text-terracotta text-body-sm mt-1">{errors.message.message}</p>}
         </div>
+
+        {error && <p className="text-terracotta text-body-sm bg-terracotta/5 p-3 rounded-lg">{error}</p>}
 
         <Button type="submit" fullWidth disabled={isSubmitting}>
           {isSubmitting ? 'Sending…' : 'Send Enquiry'}

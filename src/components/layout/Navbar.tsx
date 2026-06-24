@@ -1,106 +1,98 @@
 'use client'
+
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useScrolled } from '@/lib/hooks/useScrolled'
 import { cn } from '@/lib/utils/cn'
 
-const NAV_LINKS = [
+const NAV = [
   { label: 'Properties', href: '/properties' },
-  { label: 'About',      href: '/about' },
   { label: 'Services',   href: '/services' },
   { label: 'Investors',  href: '/investors' },
   { label: 'News',       href: '/news' },
+  { label: 'About',      href: '/about' },
+  { label: 'Contact',    href: '/contact' },
 ]
 
 export function Navbar() {
-  const scrolled = useScrolled(80)
   const [open, setOpen] = useState(false)
-  const scrolledStyle = scrolled
-    ? {
-        background: 'rgba(27, 42, 74, 0.88)',
-        backdropFilter: 'blur(14px)',
-        WebkitBackdropFilter: 'blur(14px)',
-        borderBottom: '1px solid rgba(75, 163, 211, 0.12)',
-      }
-    : {}
+  const scrolled = useScrolled(80)
+  const pathname = usePathname()
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-      style={scrolledStyle}
-    >
-      <nav className="container-lp h-20 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" aria-label="Legitimate Properties Limited home" className="flex items-center">
-          <div className="brightness-0 invert">
-            <Image
-              src="/logo.png"
-              width={200}
-              height={52}
-              alt="Legitimate Properties Limited"
-              className="object-contain object-left h-12 w-auto"
-              priority
-            />
-          </div>
-        </Link>
-
-        {/* Desktop links */}
-        <ul className="hidden lg:flex items-center gap-8">
-          {NAV_LINKS.map(link => (
-            <li key={link.href}>
-              <Link href={link.href}
-                className="text-cream/80 hover:text-gold text-body-sm font-medium transition-colors duration-200 label-caps">
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        {/* CTA */}
-        <Link href="/contact"
-          className="hidden lg:inline-flex items-center px-5 py-2.5 bg-terracotta text-white text-body-sm font-semibold rounded-lg hover:bg-terracotta/90 transition-colors duration-200">
-          Get In Touch
-        </Link>
-
-        {/* Mobile hamburger */}
-        <button onClick={() => setOpen(true)} className="lg:hidden text-cream p-2" aria-label="Open menu">
-          <Menu size={24} />
-        </button>
-      </nav>
-
-      {/* Mobile menu overlay */}
-      {open && (
-        <div className="fixed inset-0 bg-cream z-50 flex flex-col">
-          <div className="container-lp h-20 flex items-center justify-between">
-            <Link href="/" aria-label="Legitimate Properties Limited home">
-              <Image
-                src="/logo.png"
-                width={200}
-                height={52}
-                alt="Legitimate Properties Limited"
-                className="object-contain object-left h-12 w-auto"
-              />
-            </Link>
-            <button onClick={() => setOpen(false)} className="text-espresso p-2" aria-label="Close menu">
-              <X size={24} />
-            </button>
-          </div>
-          <nav className="flex-1 container-lp flex flex-col justify-center gap-6">
-            {NAV_LINKS.map(link => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
-                className="font-display text-h2 text-espresso hover:text-terracotta transition-colors">
-                {link.label}
-              </Link>
-            ))}
-            <Link href="/contact" onClick={() => setOpen(false)}
-              className="mt-4 inline-flex w-fit items-center px-6 py-3 bg-terracotta text-white font-semibold rounded-lg">
-              Get In Touch
-            </Link>
-          </nav>
-        </div>
+      className={cn(
+        'fixed inset-x-0 top-0 z-50 transition-[background,backdrop-filter,border-color] duration-300',
+        scrolled
+          ? 'bg-espresso/90 backdrop-blur-lg border-b border-cream/10'
+          : 'bg-transparent border-b border-transparent'
       )}
+    >
+      <div className="container-lp flex items-center justify-between h-18">
+        <Link href="/" className="flex items-center gap-3 shrink-0" aria-label="Legitimate Properties home">
+          <Image src="/logo.png" width={140} height={36} alt="Legitimate Properties"
+            className="h-[36px] w-auto object-contain" />
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-8">
+          {NAV.map(item => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'text-body-sm transition-colors duration-200',
+                pathname.startsWith(item.href)
+                  ? 'text-gold font-semibold'
+                  : 'text-cream/70 hover:text-cream'
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <button
+          className="md:hidden text-cream p-2"
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle menu"
+        >
+          {open ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="md:hidden bg-espresso border-t border-cream/10"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+          >
+            <div className="container-lp py-6 space-y-4">
+              {NAV.map(item => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    'block text-body-md transition-colors duration-200',
+                    pathname.startsWith(item.href)
+                      ? 'text-gold font-semibold'
+                      : 'text-cream/70 hover:text-cream'
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }
