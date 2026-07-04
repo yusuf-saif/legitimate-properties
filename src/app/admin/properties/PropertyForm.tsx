@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { ImageUploader } from '@/components/admin/ImageUploader'
+import { MultiImageUploader } from '@/components/admin/MultiImageUploader'
 import { RichTextEditor } from '@/components/admin/RichTextEditor'
 
 interface ImageField { url: string; alt?: string; caption?: string }
@@ -77,8 +77,8 @@ export function PropertyForm({ initial }: Props) {
     setForm(f => ({ ...f, highlights: f.highlights.filter((_: string, idx: number) => idx !== i) }))
   }
 
-  function addImage(img: ImageField | null) {
-    if (img) setForm(f => ({ ...f, images: [...f.images, img] }))
+  function addImages(urls: string[]) {
+    setForm(f => ({ ...f, images: [...f.images, ...urls.map(url => ({ url }))] }))
   }
 
   function removeImage(i: number) {
@@ -238,7 +238,7 @@ export function PropertyForm({ initial }: Props) {
                 className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full text-xs hover:bg-red-600">&times;</button>
             </div>
           ))}
-          <ImageUploader value={null} onChange={(img) => addImage(img)} showAlt={false} showCaption={false} />
+          <MultiImageUploader onUpload={addImages} />
         </div>
       </div>
     </form>
