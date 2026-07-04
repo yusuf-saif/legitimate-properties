@@ -76,7 +76,7 @@ Premium real estate website for Legitimate Properties (Nigeria). Next.js 14 + Pr
 | `/admin/news` | Manage news articles |
 | `/admin/team` | Manage team members |
 
-Image uploads go to `public/uploads/` via `/api/upload`.
+Image uploads go to Cloudinary via `/api/upload` (Sharp → Cloudinary SDK). Old `public/uploads/` paths in the database still render for backward compatibility.
 
 ## Environment Variables
 Fill `.env.local` (copy from `.env.example`):
@@ -84,6 +84,9 @@ Fill `.env.local` (copy from `.env.example`):
 DATABASE_URL="file:./dev.db"
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_WA_NUMBER=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
 ## Docs Reference
