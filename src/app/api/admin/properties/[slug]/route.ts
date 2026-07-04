@@ -33,6 +33,7 @@ export async function PUT(req: NextRequest, { params }: { params: { slug: string
         description: body.description ?? '',
         highlights: body.highlights ?? '[]',
         featured: body.featured ?? false,
+        published: body.published ?? true,
         images: body.images?.length ? {
           create: body.images.map((img: { url: string; alt?: string; caption?: string }, i: number) => ({
             url: img.url,

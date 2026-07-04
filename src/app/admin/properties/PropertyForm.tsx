@@ -6,6 +6,13 @@ import Image from 'next/image'
 import { MultiImageUploader } from '@/components/admin/MultiImageUploader'
 import { RichTextEditor } from '@/components/admin/RichTextEditor'
 
+const PRESET_HIGHLIGHTS = [
+  'Pool', 'Gym', '24/7 Security', 'Parking', 'Generator',
+  'Smart Home', 'Home Theater', 'Garden', 'Staff Quarters',
+  'CCTV', 'Walk-in Closet', 'Terrace', 'Concierge',
+  'Study', 'Prayer Room', 'Kids Play Area', 'BQ',
+]
+
 interface ImageField { url: string; alt?: string; caption?: string }
 
 interface Props {
@@ -27,6 +34,7 @@ interface Props {
     description: string
     highlights: string
     featured: boolean
+    published: boolean
     images: ImageField[]
   }
 }
@@ -51,6 +59,7 @@ export function PropertyForm({ initial }: Props) {
     description: initial?.description ?? '',
     highlights: initial?.highlights ? JSON.parse(initial.highlights) : [] as string[],
     featured: initial?.featured ?? false,
+    published: initial?.published ?? true,
     images: initial?.images ?? [] as ImageField[],
     newHighlight: '',
   })
@@ -75,6 +84,18 @@ export function PropertyForm({ initial }: Props) {
 
   function removeHighlight(i: number) {
     setForm(f => ({ ...f, highlights: f.highlights.filter((_: string, idx: number) => idx !== i) }))
+  }
+
+  function togglePreset(preset: string) {
+    setForm(f => {
+      const exists = f.highlights.includes(preset)
+      return {
+        ...f,
+        highlights: exists
+          ? f.highlights.filter((h: string) => h !== preset)
+          : [...f.highlights, preset],
+      }
+    })
   }
 
   function addImages(urls: string[]) {
@@ -179,6 +200,11 @@ export function PropertyForm({ initial }: Props) {
             onChange={e => setForm(f => ({ ...f, featured: e.target.checked }))} />
           <label htmlFor="featured" className="text-body-sm text-text-muted">Featured</label>
         </div>
+        <div className="flex items-center gap-2 pt-6">
+          <input type="checkbox" id="published" checked={form.published}
+            onChange={e => setForm(f => ({ ...f, published: e.target.checked }))} />
+          <label htmlFor="published" className="text-body-sm text-text-muted">Visible on website</label>
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -217,6 +243,21 @@ export function PropertyForm({ initial }: Props) {
             className="flex-1 px-3 py-2 border border-border-soft rounded-lg text-body-sm focus:outline-none focus:border-terracotta transition-colors" />
           <button type="button" onClick={addHighlight}
             className="px-3 py-2 bg-espresso text-cream rounded-lg text-body-sm hover:bg-espresso/90 transition-colors">Add</button>
+        </div>
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {PRESET_HIGHLIGHTS.map(preset => {
+            const active = form.highlights.includes(preset)
+            return (
+              <button key={preset} type="button" onClick={() => togglePreset(preset)}
+                className={`px-2.5 py-1 rounded-full text-body-xs border transition-colors ${
+                  active
+                    ? 'bg-terracotta text-white border-terracotta'
+                    : 'bg-white text-text-muted border-border-soft hover:border-terracotta hover:text-terracotta'
+                }`}>
+                {preset}
+              </button>
+            )
+          })}
         </div>
         <div className="flex flex-wrap gap-2">
           {form.highlights.map((h: string, i: number) => (

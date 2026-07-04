@@ -33,6 +33,7 @@ export interface Property {
   highlights: string[]
   gallery: ImageField[]
   featured: boolean
+  published: boolean
   createdAt: string
 }
 

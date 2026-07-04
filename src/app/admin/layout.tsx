@@ -1,9 +1,10 @@
 import Link from 'next/link'
-import { Building2, Newspaper, Users, LayoutDashboard } from 'lucide-react'
+import { Building2, Newspaper, Users, LayoutDashboard, Upload } from 'lucide-react'
 
 const NAV = [
   { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { label: 'Properties', href: '/admin/properties', icon: Building2 },
+  { label: 'Import', href: '/admin/properties/import', icon: Upload },
   { label: 'News', href: '/admin/news', icon: Newspaper },
   { label: 'Team', href: '/admin/team', icon: Users },
 ]

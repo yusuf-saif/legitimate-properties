@@ -8,16 +8,18 @@ import type { Property } from '@/types'
 export function PropertyGrid({ properties }: { properties: Property[] }) {
   if (!properties?.length) {
     return (
-      <div className="py-24 text-center text-text-muted">
-        <p className="heading-h3">No properties found.</p>
-        <p className="text-body-md mt-2">Try adjusting your filters.</p>
+      <div className="py-24 text-center">
+        <p className="heading-h3 text-espresso">No properties found</p>
+        <p className="text-body-md text-text-muted mt-2">
+          Try adjusting your filters to see more results.
+        </p>
       </div>
     )
   }
 
   return (
     <motion.div
-      className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8"
+      className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
       variants={staggerContainer}
       initial="hidden"
       whileInView="visible"

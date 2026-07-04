@@ -28,6 +28,7 @@ export default async function EditPropertyPage({ params }: { params: { slug: str
       description: property.description,
       highlights: property.highlights,
       featured: property.featured,
+      published: property.published,
       images: property.images.map(img => ({ url: img.url, alt: img.alt ?? undefined, caption: img.caption ?? undefined })),
     }} />
   )

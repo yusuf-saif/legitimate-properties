@@ -25,6 +25,7 @@ model Property {
   description    String          @default("")
   highlights     String          @default("[]")
   featured       Boolean         @default(false)
+  published      Boolean         @default(true)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   images         PropertyImage[]

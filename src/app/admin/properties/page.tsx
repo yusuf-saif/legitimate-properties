@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
-import { Plus, Edit, Trash2 } from 'lucide-react'
+import { Plus, Upload, Edit, Trash2 } from 'lucide-react'
 import { DeleteButton } from './DeleteButton'
 
 export const dynamic = 'force-dynamic'
@@ -14,10 +14,16 @@ export default async function AdminPropertiesPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="heading-h2 text-espresso">Properties</h1>
-        <Link href="/admin/properties/new"
-          className="flex items-center gap-2 px-4 py-2 bg-terracotta text-white rounded-lg hover:bg-terracotta/90 transition-colors text-body-sm font-semibold">
-          <Plus size={16} /> New Property
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/admin/properties/import"
+            className="flex items-center gap-2 px-4 py-2 border border-border-soft text-text-body rounded-lg hover:border-terracotta hover:text-terracotta transition-colors text-body-sm font-semibold">
+            <Upload size={16} /> Import CSV
+          </Link>
+          <Link href="/admin/properties/new"
+            className="flex items-center gap-2 px-4 py-2 bg-terracotta text-white rounded-lg hover:bg-terracotta/90 transition-colors text-body-sm font-semibold">
+            <Plus size={16} /> New Property
+          </Link>
+        </div>
       </div>
 
       <div className="rounded-card bg-white shadow-card border border-border-soft overflow-hidden">
@@ -28,7 +34,7 @@ export default async function AdminPropertiesPage() {
               <th className="p-4 text-body-sm font-semibold text-espresso">Type</th>
               <th className="p-4 text-body-sm font-semibold text-espresso">Status</th>
               <th className="p-4 text-body-sm font-semibold text-espresso">Price</th>
-              <th className="p-4 text-body-sm font-semibold text-espresso">Featured</th>
+              <th className="p-4 text-body-sm font-semibold text-espresso">Status</th>
               <th className="p-4 text-body-sm font-semibold text-espresso">Actions</th>
             </tr>
           </thead>
@@ -41,7 +47,7 @@ export default async function AdminPropertiesPage() {
                 <td className="p-4 text-body-sm text-text-muted">{p.type}</td>
                 <td className="p-4"><span className="label-caps text-text-muted">{p.status}</span></td>
                 <td className="p-4 text-body-sm text-text-muted">{p.price ? `₦${p.price.toLocaleString()}` : '—'}</td>
-                <td className="p-4">{p.featured ? <span className="text-green-600 text-body-sm">Yes</span> : <span className="text-text-muted text-body-sm">No</span>}</td>
+                <td className="p-4">{p.published ? <span className="text-green-600 label-caps">Published</span> : <span className="text-amber-600 label-caps">Draft</span>}</td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <Link href={`/admin/properties/${p.id}/edit`}

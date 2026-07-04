@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { ImageField } from '@/types'
@@ -9,12 +9,23 @@ import type { ImageField } from '@/types'
 export function PropertyGallery({ images, title }: { images: ImageField[]; title: string }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
+  useEffect(() => {
+    if (lightboxIndex === null) return
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setLightboxIndex(null)
+      if (e.key === 'ArrowLeft') setLightboxIndex(i => i !== null && i > 0 ? i - 1 : i)
+      if (e.key === 'ArrowRight') setLightboxIndex(i => i !== null && i < images.length - 1 ? i + 1 : i)
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [lightboxIndex, images.length])
+
   if (!images?.length) return null
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[70vh] overflow-hidden">
-        {images.slice(0, 5).map((img, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {images.map((img, i) => (
           <motion.button
             key={i}
             onClick={() => setLightboxIndex(i)}
@@ -61,19 +72,31 @@ export function PropertyGallery({ images, title }: { images: ImageField[]; title
 
             <motion.div
               key={lightboxIndex}
-              className="relative w-full max-w-5xl aspect-video mx-6"
+              className="relative w-full max-w-5xl mx-6 flex flex-col items-center"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               onClick={e => e.stopPropagation()}
             >
-              <Image
-                src={images[lightboxIndex].url}
-                alt={images[lightboxIndex].alt ?? `${title} image ${lightboxIndex + 1}`}
-                fill className="object-contain"
-                sizes="100vw"
-                priority
-              />
+              <div className="relative w-full aspect-video">
+                <Image
+                  src={images[lightboxIndex].url}
+                  alt={images[lightboxIndex].alt ?? `${title} image ${lightboxIndex + 1}`}
+                  fill className="object-contain"
+                  sizes="100vw"
+                  priority
+                />
+              </div>
+              <div className="flex items-center gap-4 mt-4">
+                <span className="text-cream/60 text-body-sm">
+                  {lightboxIndex + 1} / {images.length}
+                </span>
+                {images[lightboxIndex].caption && (
+                  <span className="text-cream/80 text-body-sm italic">
+                    {images[lightboxIndex].caption}
+                  </span>
+                )}
+              </div>
             </motion.div>
           </motion.div>
         )}

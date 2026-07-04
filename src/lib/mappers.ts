@@ -18,6 +18,7 @@ interface PrismaProperty {
   description: string
   highlights: string
   featured: boolean
+  published: boolean
   createdAt: Date
   images?: { url: string; alt: string | null; caption: string | null; sortOrder: number }[]
 }
@@ -52,6 +53,7 @@ export function mapProperty(p: PrismaProperty): Property {
         caption: img.caption ?? undefined,
       })),
     featured: p.featured,
+    published: p.published,
     createdAt: p.createdAt.toISOString(),
   }
 }

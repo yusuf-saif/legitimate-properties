@@ -32,6 +32,7 @@ function matchesPriceRange(property: Property, priceRange?: string) {
 
 export default async function PropertiesPage({ searchParams }: Props) {
   const allRaw = await prisma.property.findMany({
+    where: { published: true },
     include: { images: true },
     orderBy: [{ featured: 'desc' }, { createdAt: 'desc' }],
   })
@@ -40,6 +41,7 @@ export default async function PropertiesPage({ searchParams }: Props) {
   const type = searchParams?.type?.toLowerCase()
   const location = searchParams?.location?.toLowerCase()
   const priceRange = searchParams?.priceRange
+  const hasFilters = Boolean(type || location || priceRange)
 
   const properties = allProperties.filter(property => {
     if (type && property.type !== type) return false
@@ -49,16 +51,24 @@ export default async function PropertiesPage({ searchParams }: Props) {
 
   return (
     <PageTransition>
-      <div className="pt-24">
-        <section className="section-padding-sm bg-espresso text-cream container-lp">
-          <p className="label-caps text-gold mb-4">Our Portfolio</p>
-          <h1 className="heading-h1 max-w-2xl">
-            Every Property, A Story Worth Living
-          </h1>
+      <div>
+        <section className="section-padding-sm bg-espresso text-cream">
+          <div className="container-lp">
+            <p className="label-caps text-gold mb-4">Our Portfolio</p>
+            <h1 className="heading-h1 max-w-2xl">
+              Every Property, A Story Worth Living
+            </h1>
+          </div>
         </section>
 
         <section className="section-padding container-lp">
           <PropertyFilters />
+          {properties.length > 0 && (
+            <p className="text-body-sm text-text-muted mb-8">
+              Showing {properties.length} {properties.length === 1 ? 'property' : 'properties'}
+              {hasFilters ? ' — filtered' : ''}
+            </p>
+          )}
           <PropertyGrid properties={properties} />
         </section>
       </div>
